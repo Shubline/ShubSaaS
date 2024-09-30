@@ -1,0 +1,12 @@
+// {
+//   "compilerOptions": {
+//     "target": "es5",
+//     "module": "none",
+//     "removeComments": true,
+//     "strict": false,
+//     "allowSyntheticDefaultImports": true,
+//     "outDir": "./Scripts/ALButton",
+//     "typeRoots": [ "./Scripts/ALButton/types", "./Scripts/ALButton/node_modules/@types"],    
+//     "esModuleInterop": true
+//   }
+// }

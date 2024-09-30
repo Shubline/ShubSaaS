@@ -1,0 +1,10 @@
+#clock{
+    font-size: 175px;
+    width: auto;
+    margin: auto;
+    text-align: center;
+    border: 2px solid black;
+    border-radius: 20px; 
+    color: tomato;
+     /* background-color: brown; */
+}
