@@ -48,58 +48,12 @@ codeunit 50003 "Custom Tracking Specification"
         TrackingSpecification.Insert(true);
         exit(TrackingSpecification);
     end;
-
+    
     local procedure IsInitialize()
     begin
         if not IsInIt then
             Dialog.Error('First Intialize the Reservation Entry Use : "InitTrackingSpecification"');
     end;
-
-
-    procedure OpenTracking()
-    var
-        CreateTrackingSpecification: Codeunit "Custom Tracking Specification";
-        ItemTracking: Enum "Item Tracking Entry Type";
-        ResevationStatus: Enum "Reservation Status";
-        ReservationEntry: Record "Reservation Entry";
-        TrackingSpecification: Record "Tracking Specification" temporary;
-        CustomItemTrackingLines: Page "Custom Item Tracking Lines";
-    begin
-        Clear(ReservationEntry);
-        Clear(TrackingSpecification);
-        Clear(CustomItemTrackingLines);
-        ReservationEntry.SetRange("Source ID", 'nn');
-        if ReservationEntry.FindFirst() then begin
-            TrackingSpecification.CopyTrackingFromReservEntry(ReservationEntry);
-
-            CustomItemTrackingLines.SetTableView(TrackingSpecification);
-            CustomItemTrackingLines.LookupMode := true;
-            if CustomItemTrackingLines.RunModal() = Action::LookupOK then begin
-
-            end else begin
-
-            end;
-
-        end else begin
-            Clear(CreateTrackingSpecification);
-            CreateTrackingSpecification.InitTrackingSpecification();
-            // CreateReservation.SourceID(Rec."Journal Template Name", Rec."Journal Batch Name", LineNo);
-            // CreateReservation.DefineTracking(ItemTracking::"Lot No.", LotNo, '', '');
-            // CreateReservation.Reservation(ItemJornalLine."Location Code", ItemJornalLine."Item No.", ItemJornalLine."Variant Code", 0);
-            CreateTrackingSpecification.SourceType(83, 3);
-
-
-            TrackingSpecification := CreateTrackingSpecification.ExitTrackingSpecification();
-            CustomItemTrackingLines.SetTableView(TrackingSpecification);
-            CustomItemTrackingLines.LookupMode := true;
-            if CustomItemTrackingLines.RunModal() = Action::LookupOK then begin
-
-            end else begin
-
-            end;
-        end;
-    end;
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -131,12 +85,18 @@ codeunit 50003 "Custom Tracking Specification"
         ItemTrackingLines.RunModal();
     End;
 
-    [EventSubscriber(ObjectType::Page, Page::"Item Tracking Lines", OnBeforeRegisterChange, '', false, false)]
-    local procedure "Item Tracking Lines_OnBeforeRegisterChange"(var OldTrackingSpecification: Record "Tracking Specification"; var NewTrackingSpecification: Record "Tracking Specification"; CurrentSignFactor: Integer; FormRunMode: Option; var IsHandled: Boolean; CurrentPageIsOpen: Boolean; ChangeType: Option; ModifySharedFields: Boolean; var ResultOK: Boolean)
-    begin
-        CurrentSignFactor := 1;
-    end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Create Reserv. Entry", OnAfterSignFactor, '', false, false)]
+    local procedure "Create Reserv. Entry_OnAfterSignFactor"(ReservationEntry: Record "Reservation Entry"; var Sign: Integer)
+    begin
+        case ReservationEntry."Source Type" of
+            Database::"Sales Line":
+                if ReservationEntry."Source Subtype" in [3, 5] then // Credit memo, Return Order = supply
+                    Sign := 1
+                else
+                    Sign := -1;
+        end;
+    end;
 
 
 

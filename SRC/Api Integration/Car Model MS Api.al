@@ -17,7 +17,7 @@ table 50100 "Car Brand"
         {
             Caption = 'Country';
         }
-        
+
     }
 
     keys
