@@ -75,43 +75,45 @@ page 50059 "Karigar Line Subform"
                     ItemTracking: page "Item Tracking Lines";
                     TrackingSpecification: Record "Tracking Specification";
                     KarigarIssueHeader: Record "Karigar Issue Header";
+                    CustomTrackingSpecification: Codeunit "Custom Tracking Specification";
                 begin
                     KarigarIssueHeader.Get(Rec."Issue No.");
-                    CallItemTracking(Rec, Rec."Item No.", Rec."Item Description", KarigarIssueHeader."From Location", '', '', 1);
+
+                    CustomTrackingSpecification.InitTrackingSpecification();
+                    CustomTrackingSpecification.SetItemData(Rec."Item No.", Rec."Item Description", KarigarIssueHeader."From Location", Rec."Variant Code", '', 1);
+                //    CustomTrackingSpecification.SetQuantities();
+                    CustomTrackingSpecification.SetSourceType(Database::"Karigar Issue Line", 0);
+                    CustomTrackingSpecification.SetSourceID(Rec."Issue No.", '', Rec."Line No.");
+                    CustomTrackingSpecification.CallItemTrackingLines();
+
+                    // CallItemTracking(Rec, Rec."Item No.", Rec."Item Description", KarigarIssueHeader."From Location", '', '', 1);
                 end;
             }
-
         }
-
-
     }
 
-    procedure CallItemTracking(PurchLine: Record "Karigar Issue Line"; ItemNo: Code[20]; ItemDescription: Text[100]; LocationCode: Code[10]; VariantCode: Code[10]; BinCode: Code[20]; QtyPerUoM: Decimal)
-    var
-        TrackingSpecification: Record "Tracking Specification";
-        ItemTrackingLines: Page "Item Tracking Lines";
-    begin
-        TrackingSpecification.Init();
+    // procedure CallItemTracking(PurchLine: Record "Karigar Issue Line"; ItemNo: Code[20]; ItemDescription: Text[100]; LocationCode: Code[10]; VariantCode: Code[10]; BinCode: Code[20]; QtyPerUoM: Decimal)
+    // var
+    //     TrackingSpecification: Record "Tracking Specification";
+    //     ItemTrackingLines: Page "Item Tracking Lines";
+    // begin
+    //     TrackingSpecification.Init();
 
-        TrackingSpecification."Item No." := ItemNo;
-        TrackingSpecification.Description := ItemDescription;
-        TrackingSpecification."Location Code" := LocationCode;
-        TrackingSpecification."Variant Code" := VariantCode;
-        TrackingSpecification."Bin Code" := BinCode;
-        TrackingSpecification."Qty. per Unit of Measure" := QtyPerUoM;
+    //     TrackingSpecification."Item No." := ItemNo;
+    //     TrackingSpecification.Description := ItemDescription;
+    //     TrackingSpecification."Location Code" := LocationCode;
+    //     TrackingSpecification."Variant Code" := VariantCode;
+    //     TrackingSpecification."Bin Code" := BinCode;
+    //     TrackingSpecification."Qty. per Unit of Measure" := QtyPerUoM;
 
-        TrackingSpecification.SetSource(Database::"Karigar Issue Line" , 1, PurchLine."Issue No.", PurchLine."Line No.", '', 0);
+    //     TrackingSpecification.SetSource(Database::"Karigar Issue Line" , 1, PurchLine."Issue No.", PurchLine."Line No.", '', 0);
 
+    //     TrackingSpecification.SetQuantities(
+    //       PurchLine.Quantity, PurchLine.Quantity, PurchLine.Quantity,
+    //       PurchLine.Quantity, PurchLine.Quantity, PurchLine.Quantity,
+    //       PurchLine.Quantity);
 
-        TrackingSpecification.SetQuantities(
-          PurchLine.Quantity, PurchLine.Quantity, PurchLine.Quantity,
-          PurchLine.Quantity, PurchLine.Quantity, PurchLine.Quantity,
-          PurchLine.Quantity);
-
-
-        ItemTrackingLines.SetSourceSpec(TrackingSpecification, Today);
-        ItemTrackingLines.RunModal();
-    End;
-
-
+    //     ItemTrackingLines.SetSourceSpec(TrackingSpecification, Today);
+    //     ItemTrackingLines.RunModal();
+    // End;
 }
