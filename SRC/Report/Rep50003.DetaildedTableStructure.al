@@ -93,6 +93,8 @@ report 50003 "Detailded Table Structure"
     end;
 
     local procedure MakeBody()
+    var
+        FieldLenth: Integer;
     begin
         TempExcelBuffer.NewRow();
         // TempExcelBuffer.AddColumn(Field.TableNo, FALSE, '', False, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Number);
@@ -107,7 +109,12 @@ report 50003 "Detailded Table Structure"
         TempExcelBuffer.AddColumn(Field."Field Caption", FALSE, '', False, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
         TempExcelBuffer.AddColumn(Field.RelationTableNo, FALSE, '', False, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Number);
         TempExcelBuffer.AddColumn(Field.RelationFieldNo, FALSE, '', False, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Number);
-        TempExcelBuffer.AddColumn(Field.OptionString, FALSE, '', False, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
+
+        if 250 > FieldLenth then
+            TempExcelBuffer.AddColumn(Field.OptionString, FALSE, '', False, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text)
+        else
+            TempExcelBuffer.AddColumn('More then 250 Error', FALSE, '', False, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
+
         TempExcelBuffer.AddColumn(Field.DataClassification, FALSE, '', False, FALSE, TRUE, '', TempExcelBuffer."Cell Type"::Text);
     end;
 

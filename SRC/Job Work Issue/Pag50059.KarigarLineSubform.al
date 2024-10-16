@@ -79,12 +79,15 @@ page 50059 "Karigar Line Subform"
                 begin
                     KarigarIssueHeader.Get(Rec."Issue No.");
 
+                    begin
                     CustomTrackingSpecification.InitTrackingSpecification();
                     CustomTrackingSpecification.SetItemData(Rec."Item No.", Rec."Item Description", KarigarIssueHeader."From Location", Rec."Variant Code", '', 1);
-                //    CustomTrackingSpecification.SetQuantities();
+                    CustomTrackingSpecification.SetQuantities(Rec.Quantity, 0, 0, 0, 0, 0, 0);
                     CustomTrackingSpecification.SetSourceType(Database::"Karigar Issue Line", 0);
-                    CustomTrackingSpecification.SetSourceID(Rec."Issue No.", '', Rec."Line No.");
+                    CustomTrackingSpecification.SetSourceID(Rec."Issue No.", '', Rec."Line No.", 0);
                     CustomTrackingSpecification.CallItemTrackingLines();
+                    end;
+                    
 
                     // CallItemTracking(Rec, Rec."Item No.", Rec."Item Description", KarigarIssueHeader."From Location", '', '', 1);
                 end;
